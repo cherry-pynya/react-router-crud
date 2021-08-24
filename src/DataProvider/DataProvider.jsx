@@ -6,14 +6,16 @@ import DataContext from '../Context/DataContex';
 export default function DataProvider(props) {
   const [data, setData] = useState([]);
 
-  console.log(data)
-
   const getData = () => {
     fetch(props.url)
-      .then((response) => response.json())
-      .then((arr) => {
-        setData(arr);
-      });
+      .then(response => {
+        if (response.ok) return response.json();
+      }).then((newData) => {
+        setData(newData);
+      }).catch((e) => {
+        console.error(e);
+        setData([]);
+      })
   };
 
   useEffect(() => {
@@ -28,23 +30,38 @@ export default function DataProvider(props) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(obj),
-    })
-    getData();
+    }).then((response) => {
+      if (response.ok) getData();
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   const deleteTicket = (id) => {
     fetch(`${props.url}/${id}`, {
       method: 'DELETE',
+    }).then((response) => {
+      if (response.ok) getData();
+    }).catch((error) => {
+      console.error(error);
     });
-    getData();
   }
 
-  const pickCard = (id) => {
-    <Redirect to={`/posts/${id}`} />
+  const editCard = (obj) => {
+    fetch('POST', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(obj)
+    }).then((response) => {
+      if (response.ok) getData();
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   return(
-      <DataContext.Provider value={{data, submitTicket, deleteTicket, pickCard}}>
+      <DataContext.Provider value={{data, submitTicket, deleteTicket, editCard}}>
           {props.children}
       </DataContext.Provider>
   );

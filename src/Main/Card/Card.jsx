@@ -4,18 +4,23 @@ import { useContext } from 'react';
 
 moment.locale('ru');
 
-export default function Card({ card }) {
-  const { deleteTicket, pickCard } = useContext(DataContext);
+export default function Card({ card, props }) {
+  const { deleteTicket } = useContext(DataContext);
 
   const { id, content, created } = card;
   const date = moment(created).format('LL')
 
   const handleDelete = () => {
     deleteTicket(id);
+    props.history.push('/');
   }
 
   const handlePick = () => {
-    pickCard(id);
+    props.history.push(`/posts/:${id}`);
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/:${id}`);
   }
 
   return(
@@ -26,7 +31,7 @@ export default function Card({ card }) {
       </div>
       <div className='card-body'>
         <button type='button' className='btn btn-danger' onClick={handleDelete}>Удалить</button>
-        <button type='button' className='btn btn-primary'>Редактировать</button>
+        <button type='button' className='btn btn-primary' onClick={handleEdit}>Редактировать</button>
       </div>
     </div>
   );

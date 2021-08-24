@@ -6,6 +6,7 @@ import Main from "./Main/Main";
 import DataProvider from './DataProvider/DataProvider';
 import Form from './Form/Form';
 import CardPicked from './CardPicked/CardPicked';
+import EditCard from './EditCard/EditCard';
 
 const url = "http://localhost:7777/posts";
 
@@ -18,8 +19,9 @@ function App() {
           <div className="main">
             <Switch>
               <Route path="/" exact component={Main} />
-              <Route path="/posts/new" component={Form} />
+              <Route path="/posts/new" render={props => <Form {...props}/>} />
               <Route path="/posts/:id" component={CardPicked} />
+              <Route path="/edit/:id" render={props => <EditCard {...props}/>} />
             </Switch>
           </div>
         </div>
